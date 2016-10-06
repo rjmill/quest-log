@@ -1,18 +1,22 @@
 var test = require('tape');
 
 var quest = require('../src/quest.js');
+var counterId = require('../src/counterId.js');
 
 var testTitle = "title of quest";
 var testDescription = "describing quest";
 var testQuest;
+var expectedId = 1;
 
 var testTitle1 = "title of quest1";
 var testDescription1 = "describing quest1";
 var testQuest1;
+var expectedId1 = 2;
 
 var testTitle2 = "title of quest2";
 var testDescription2 = "describing quest2";
 var testQuest2;
+var expectedId2 = 3;
 
 var changedTitle = "newly changed title";
 var changedDescription = "newly changed description";
@@ -30,6 +34,8 @@ var teardown = function() {
   testQuest = undefined;
   testQuest1 = undefined;
   testQuest2 = undefined;
+
+  counterId.resetIds();
 }
 
 test('create a new quest', function(t) {
@@ -37,6 +43,26 @@ test('create a new quest', function(t) {
 
   t.equal(testQuest.getTitle(), testTitle, "title is set correctly");
   t.equal(testQuest.getDescription(), testDescription, "description is set correctly");
+  t.equal(testQuest.id, expectedId, "id is correct");
+
+  teardown();
+  t.end();
+});
+
+test('create three new quests', function(t) {
+  setup();
+
+  t.equal(testQuest.getTitle(), testTitle, "title is set correctly");
+  t.equal(testQuest.getDescription(), testDescription, "description is set correctly");
+  t.equal(testQuest.id, expectedId, "id is correct");
+
+  t.equal(testQuest1.getTitle(), testTitle1, "title 1 is set correctly");
+  t.equal(testQuest1.getDescription(), testDescription1, "description 1 is set correctly");
+  t.equal(testQuest1.id, expectedId1, "id 1 is correct");
+
+  t.equal(testQuest2.getTitle(), testTitle2, "title 2 is set correctly");
+  t.equal(testQuest2.getDescription(), testDescription2, "description 2 is set correctly");
+  t.equal(testQuest2.id, expectedId2, "id 2 is correct");
 
   teardown();
   t.end();

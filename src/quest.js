@@ -1,3 +1,6 @@
+// TODO: do some kind of dependency injection for the id factory
+var counterId = require('./counterId.js');
+
 // FIXME: better name
 var questInfo = function(title, description) {
   return {
@@ -24,18 +27,16 @@ var questState = (function() {
     "new",
     "in progress",
     "completed",
-  ]
-
+  ];
   var DEFAULT_STATE = "new";
 
   function questState() {
     var state = DEFAULT_STATE;
-
     return {
       getState: function() {
         return state;
-      }
-    }
+      },
+    };
   }
 
   return questState;
@@ -55,11 +56,14 @@ var questList = function() {
   }
 }
 
-// TODO: mark quest as completed
+// TODO: add questState
 var quest = function(title, description) {
   var info = questInfo(title, description);
   var subquestList = questList();
-  return Object.assign({}, info, 
+  return Object.assign({
+                         id: counterId.getNewId(),
+                       },
+                       info, 
                        { // TODO: consider assinging to a variable for readability?
                          addSubquest: subquestList.addQuest,
                          getSubquestList: subquestList.getQuestList
