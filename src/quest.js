@@ -1,5 +1,6 @@
 // TODO: do some kind of dependency injection for the id factory
 var counterId = require('./counterId.js');
+var questList = require('./questList.js');
 
 var questDescription = function(description) {
   return {
@@ -33,20 +34,6 @@ var questState = (function() {
 
   return questState;
 })();
-
-// TODO: select specific quest
-var questList = function() {
-  var questList = [];
-  return {
-    addQuest: function(quest) {
-      questList.push(quest);
-      return this;
-    },
-    getQuestList: function() {
-      return questList;
-    },
-  }
-}
 
 // TODO: add questState
 var quest = function(description) {
