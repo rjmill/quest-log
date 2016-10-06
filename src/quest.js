@@ -2,7 +2,19 @@
 var counterId = require('./counterId.js');
 
 // FIXME: better name
-var questInfo = function(title, description) {
+var questDescription = function(description) {
+  return {
+    getDescription: function() {
+      return description;
+    },
+    setDescription: function(newDescription) {
+      description = newDescription;
+      return this;
+    },
+  };
+};
+
+var questTitle = function(title) {
   return {
     getTitle: function() {
       return title;
@@ -11,14 +23,7 @@ var questInfo = function(title, description) {
       title = newTitle;
       return this;
     },
-    getDescription: function() {
-      return description;
-    },
-    setDescription: function(newDescription) {
-      description = newDescription;
-      return this;
-    },
-  }
+  };
 };
 
 // TODO: get a better idea of what you want this to do
@@ -58,12 +63,14 @@ var questList = function() {
 
 // TODO: add questState
 var quest = function(title, description) {
-  var info = questInfo(title, description);
+  var title = questTitle(title);
+  var description = questDescription(description);
   var subquestList = questList();
   return Object.assign({
                          id: counterId.getNewId(),
                        },
-                       info, 
+                       title,
+                       description,
                        { // TODO: consider assinging to a variable for readability?
                          addSubquest: subquestList.addQuest,
                          getSubquestList: subquestList.getQuestList
