@@ -84,13 +84,13 @@ test('change quest info', function(t) {
 test('add subquest to subquestList', function(t) {
   setup();
 
-  testQuest.addSubquest(testQuest1);
-  t.equal(testQuest.getSubquestList().length, 1, "length is right after one addition")
-  testQuest.addSubquest(testQuest2);
-  t.equal(testQuest.getSubquestList().length, 2, "length is right after two additions")
+  testQuest.addQuest(testQuest1);
+  t.equal(testQuest.getQuestList().length, 1, "length is right after one addition")
+  testQuest.addQuest(testQuest2);
+  t.equal(testQuest.getQuestList().length, 2, "length is right after two additions")
 
-  t.equal(testQuest.getSubquestList()[0].getDescription(), testDescription1, "description of first subquest is correct");
-  t.equal(testQuest.getSubquestList()[1].getDescription(), testDescription2, "description of second subquest is correct");
+  t.equal(testQuest.getQuestList()[0].getDescription(), testDescription1, "description of first subquest is correct");
+  t.equal(testQuest.getQuestList()[1].getDescription(), testDescription2, "description of second subquest is correct");
 
   teardown();
   t.end();
