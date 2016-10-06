@@ -3,6 +3,7 @@ var test = require('tape');
 var quest = require('../src/quest.js');
 var counterId = require('../src/counterId.js');
 
+
 var testDescription = "describing quest";
 var testQuest;
 var expectedId = 1;
@@ -16,8 +17,12 @@ var testQuest2;
 var expectedId2 = 3;
 
 var changedDescription = "newly changed description";
-
 var questWithNoArgs;
+
+var expectedDefaultStatus = "in progress";
+var completedStatus = "completed";
+var invalidStatus = "asdfasfdasfd";
+
 
 var setup = function() {
   testQuest = quest(testDescription);
@@ -39,6 +44,7 @@ test('create a new quest', function(t) {
 
   t.equal(testQuest.getDescription(), testDescription, "description is set correctly");
   t.equal(testQuest.id, expectedId, "id is correct");
+  t.equal(testQuest.getStatus(), expectedDefaultStatus, "status is correct")
 
   teardown();
   t.end();
@@ -49,12 +55,15 @@ test('create three new quests', function(t) {
 
   t.equal(testQuest.getDescription(), testDescription, "description is set correctly");
   t.equal(testQuest.id, expectedId, "id is correct");
+  t.equal(testQuest.getStatus(), expectedDefaultStatus, "status is correct");
 
   t.equal(testQuest1.getDescription(), testDescription1, "description 1 is set correctly");
   t.equal(testQuest1.id, expectedId1, "id 1 is correct");
+  t.equal(testQuest1.getStatus(), expectedDefaultStatus, "status 1 is correct");
 
   t.equal(testQuest2.getDescription(), testDescription2, "description 2 is set correctly");
   t.equal(testQuest2.id, expectedId2, "id 2 is correct");
+  t.equal(testQuest2.getStatus(), expectedDefaultStatus, "status 2 is correct");
 
   teardown();
   t.end();
@@ -85,4 +94,23 @@ test('add subquest to subquestList', function(t) {
 
   teardown();
   t.end();
-})
+});
+
+test('changing questStatus', function(t) {
+  setup();
+
+  t.equal(testQuest.getStatus(), expectedDefaultStatus, "default status is correct");
+
+  testQuest.setStatus(completedStatus);
+  t.equal(testQuest.getStatus(), completedStatus, "correctly changed to valid status");
+
+  try {
+    testQuest.setStatus(invalidStatus);
+    t.fail("setting invalid status should throw error");
+  } catch(e) {
+    t.pass("setting invalid status threw an error");
+  }
+
+  teardown();
+  t.end();
+});

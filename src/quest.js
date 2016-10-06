@@ -1,6 +1,7 @@
 // TODO: do some kind of dependency injection for the id factory
 var counterId = require('./counterId.js');
 var questList = require('./questList.js');
+var questStatus = require('./questStatus.js')
 
 var questDescription = function(description) {
   return {
@@ -14,38 +15,19 @@ var questDescription = function(description) {
   };
 };
 
-// TODO: get a better idea of what you want this to do
-var questState = (function() {
-  var POSSIBLE_STATES = [
-    "new",
-    "in progress",
-    "completed",
-  ];
-  var DEFAULT_STATE = "new";
-
-  function questState() {
-    var state = DEFAULT_STATE;
-    return {
-      getState: function() {
-        return state;
-      },
-    };
-  }
-
-  return questState;
-})();
-
-// TODO: add questState
 var quest = function(description) {
+  // TODO: consider just cramming these bad boys into Object.assign?
   var description = questDescription(description);
+  var status = questStatus();
+  // FIXME: make this just questList
   var subquestList = questList();
-  return Object.assign({
-                         id: counterId.getNewId(),
-                       },
-                       description,
+  return Object.assign({}, description, status,
                        { // TODO: consider assinging to a variable for readability?
                          addSubquest: subquestList.addQuest,
                          getSubquestList: subquestList.getQuestList
+                       },
+                       { // TODO: concatenate these objects?
+                         id: counterId.getNewId(),
                        });
 };
 
