@@ -43,7 +43,7 @@ test('create a new quest', function(t) {
   setup();
 
   t.equal(testQuest.getDescription(), testDescription, "description is set correctly");
-  t.equal(testQuest.id, expectedId, "id is correct");
+  t.equal(testQuest.getId(), expectedId, "id is correct");
   t.equal(testQuest.getStatus(), expectedDefaultStatus, "status is correct")
 
   teardown();
@@ -54,15 +54,15 @@ test('create three new quests', function(t) {
   setup();
 
   t.equal(testQuest.getDescription(), testDescription, "description is set correctly");
-  t.equal(testQuest.id, expectedId, "id is correct");
+  t.equal(testQuest.getId(), expectedId, "id is correct");
   t.equal(testQuest.getStatus(), expectedDefaultStatus, "status is correct");
 
   t.equal(testQuest1.getDescription(), testDescription1, "description 1 is set correctly");
-  t.equal(testQuest1.id, expectedId1, "id 1 is correct");
+  t.equal(testQuest1.getId(), expectedId1, "id 1 is correct");
   t.equal(testQuest1.getStatus(), expectedDefaultStatus, "status 1 is correct");
 
   t.equal(testQuest2.getDescription(), testDescription2, "description 2 is set correctly");
-  t.equal(testQuest2.id, expectedId2, "id 2 is correct");
+  t.equal(testQuest2.getId(), expectedId2, "id 2 is correct");
   t.equal(testQuest2.getStatus(), expectedDefaultStatus, "status 2 is correct");
 
   teardown();

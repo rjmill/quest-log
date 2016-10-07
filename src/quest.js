@@ -1,7 +1,16 @@
-// TODO: do some kind of dependency injection for the id factory?
-var counterId = require('./counterId.js');
 var questList = require('./questList.js');
 var questStatus = require('./questStatus.js')
+var idFactory = require('./counterId.js');
+
+
+var questId = function() {
+  var id = idFactory.createNewId();
+  return {
+    getId: function() {
+      return id;
+    },
+  };
+};
 
 var questDescription = function(description) {
   return {
@@ -20,9 +29,7 @@ var quest = function(description) {
                        questDescription(description),
                        questStatus(),
                        questList(),
-                       {
-                         id: counterId.getNewId(),
-                       });
+                       questId());
 };
 
 module.exports = quest;

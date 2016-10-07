@@ -6,7 +6,7 @@ var counterId = (function() {
   var STARTING_COUNTER = 0;
   var counter = STARTING_COUNTER;
 
-  var getNewId = function() {
+  var createNewId = function() {
     counter++;
     return counter;
   }
@@ -15,7 +15,7 @@ var counterId = (function() {
   }
 
   return {
-    getNewId: getNewId,
+    createNewId: createNewId,
     resetIds: resetIds,
   }
 })();
