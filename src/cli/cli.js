@@ -1,35 +1,70 @@
 var vorpal = require('vorpal')();
-var quest = require('../quest/quest.js');
+
+// TODO: unit tests for this
+// TODO: put this into another file
+var cliQuestMixin = (function() {
+  var STATUS_STRINGS = {
+    "in progress": "[ ]",
+    "completed": "[x]",
+  };
+
+  var statusToString = function(qst) {
+    return STATUS_STRINGS[qst.getStatus()];
+  };
+
+  var display = function() {
+    return statusToString(this) + " " + this.getId() + " " + this.getDescription();
+  };
+
+  return {
+    display: display,
+  };
+})();
+
+var quest = require('../quest/quest.js')(cliQuestMixin);
 
 // TODO: keep global state elsewhere
 var globalQuestList = require('../quest/questList.js')();
 
-vorpal.mode('new', 'new quest')
+var newMode = vorpal.mode('new', 'new quest')
   .alias('n')
-  .delimiter('newQuest:')
+  .delimiter('new:')
   .init(function(args, callback) {
     this.log('You can now start entering new quests.\nType "exit" to leave this mode.');
     callback();
   })
   .action(function(command, callback) {
-    globalQuestList.addQuest(quest(command));
-    this.log('quest added');
+    var newQuest = quest(command);
+    globalQuestList.addQuest(newQuest);
+    this.log('quest added (id:' + newQuest.getId() + ')');
     callback();
   })
 
-vorpal.command('show', 'show global quests')
-  .alias('s')
+var showCmd = vorpal.command('show', 'show global quests')
+  .alias('sh')
   .action(function(args, callback) {
     var self = this;
     globalQuestList
       .getQuestList()
       .forEach(function(qst) {
-        self.log(qst.getDescription());
+        self.log(qst.display());
       });
     callback();
   })
 
+var findMode = vorpal.mode('select <id>', 'select quest by id')
+  .alias('sel')
+  .init(function(args, callback) {
+    // TODO: put this into some sort of mode state
+    var qst = globalQuestList.findById(args.id);
+    this.log(qst.display());
+    callback();
+  })
+  // TODO: edit
+  // TODO: add subquest
+  // TODO: change status
+
 // TODO: look into getting a cooler delimiter
 vorpal
-  .delimiter('qlog$')
+  .delimiter('quests$')
   .show();
