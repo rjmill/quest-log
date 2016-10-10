@@ -1,4 +1,3 @@
-// TODO: select specific quest
 var questList = function() {
   var questList = [];
   return {
@@ -7,7 +6,15 @@ var questList = function() {
       return this;
     },
     getQuestList: function() {
-      return questList;
+      return questList.slice();
+    },
+    findById: function(id) {
+      // FIXME: kind of hacky
+      var ret = questList.filter(function(qst) {
+        return qst.getId() === id;
+      });
+      // TODO: error handling
+      return ret[0];
     },
   };
 };

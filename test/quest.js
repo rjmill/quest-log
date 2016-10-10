@@ -1,6 +1,7 @@
 var test = require('tape');
 
 var quest = require('../src/quest/quest.js');
+var questList = require('../src/quest/questList.js');
 var counterId = require('../src/quest/counterId.js');
 
 
@@ -19,6 +20,9 @@ var expectedId2 = 3;
 var changedDescription = "newly changed description";
 var questWithNoArgs;
 
+var testQuestList;
+var expectedTestQuestList;
+
 var expectedDefaultStatus = "in progress";
 var completedStatus = "completed";
 var invalidStatus = "asdfasfdasfd";
@@ -29,12 +33,20 @@ var setup = function() {
   testQuest1 = quest(testDescription1);
   testQuest2 = quest(testDescription2);
   questWithNoArgs = quest();
+
+  expectedTestQuestList = [testQuest, testQuest1, testQuest2];
+  testQuestList = questList();
+  testQuestList
+    .addQuest(testQuest)
+    .addQuest(testQuest1)
+    .addQuest(testQuest2);
 }
 
 var teardown = function() {
   testQuest = undefined;
   testQuest1 = undefined;
   testQuest2 = undefined;
+  testQuestList = undefined;
 
   counterId.resetIds();
 }
@@ -114,3 +126,18 @@ test('changing questStatus', function(t) {
   teardown();
   t.end();
 });
+
+test('questList', function(t) {
+  setup();
+
+  t.deepEqual(testQuestList.getQuestList(), expectedTestQuestList, "quest list contents are correct");
+
+  t.equal(testQuestList.findById(expectedId), testQuest, "finding by id works 0");
+  t.equal(testQuestList.findById(expectedId1), testQuest1, "finding by id works 1");
+  t.equal(testQuestList.findById(expectedId2), testQuest2, "finding by id works 2");
+
+  // TODO: what should happen when findById doesn't find anything
+
+  teardown();
+  t.end();
+})
