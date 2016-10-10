@@ -1,6 +1,6 @@
 var test = require('tape');
 
-var quest = require('../src/quest/quest.js');
+var quest = require('../src/quest/quest.js')();
 var questList = require('../src/quest/questList.js');
 var counterId = require('../src/quest/counterId.js');
 

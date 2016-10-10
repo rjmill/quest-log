@@ -24,12 +24,18 @@ var questDescription = function(description) {
   };
 };
 
-var quest = function(description) {
-  return Object.assign({},
-                       questDescription(description),
-                       questStatus(),
-                       questList(),
-                       questId());
+var quest = function(mixin) {
+  function quest(description) {
+    return Object.assign({},
+                        questDescription(description),
+                        questStatus(),
+                        questList(),
+                        questId(),
+                        mixin);
+  };
+
+  return quest;
 };
+
 
 module.exports = quest;
