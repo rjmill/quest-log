@@ -1,7 +1,7 @@
 {
   "name": "quest-log",
   "version": "0.0.1",
-  "description": "A quest tracker for your every day life",
+  "description": "A quest tracker for your everyday life",
   "main": "index.js",
   "scripts": {
     "test": "node test/*.js"
