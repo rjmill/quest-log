@@ -22,6 +22,7 @@ var questWithNoArgs;
 
 var testQuestList;
 var expectedTestQuestList;
+var expectedTestQuestIdList;
 
 var expectedDefaultStatus = "in progress";
 var completedStatus = "completed";
@@ -34,7 +35,9 @@ var setup = function() {
   testQuest2 = quest(testDescription2);
   questWithNoArgs = quest();
 
+
   expectedTestQuestList = [testQuest, testQuest1, testQuest2];
+  expectedTestQuestIdList = [expectedId, expectedId1, expectedId2];
   testQuestList = questList();
   testQuestList
     .addQuest(testQuest)
@@ -97,12 +100,12 @@ test('add subquest to subquestList', function(t) {
   setup();
 
   testQuest.addQuest(testQuest1);
-  t.equal(testQuest.getQuestList().length, 1, "length is right after one addition")
+  t.equal(testQuest.getQuests().length, 1, "length is right after one addition")
   testQuest.addQuest(testQuest2);
-  t.equal(testQuest.getQuestList().length, 2, "length is right after two additions")
+  t.equal(testQuest.getQuests().length, 2, "length is right after two additions")
 
-  t.equal(testQuest.getQuestList()[0].getDescription(), testDescription1, "description of first subquest is correct");
-  t.equal(testQuest.getQuestList()[1].getDescription(), testDescription2, "description of second subquest is correct");
+  t.equal(testQuest.getQuests()[0].getDescription(), testDescription1, "description of first subquest is correct");
+  t.equal(testQuest.getQuests()[1].getDescription(), testDescription2, "description of second subquest is correct");
 
   teardown();
   t.end();
@@ -130,7 +133,8 @@ test('changing questStatus', function(t) {
 test('questList', function(t) {
   setup();
 
-  t.deepEqual(testQuestList.getQuestList(), expectedTestQuestList, "quest list contents are correct");
+  t.deepEqual(testQuestList.getQuests(), expectedTestQuestList, "quest list contents are correct");
+  t.deepEqual(testQuestList.getQuestIds(), expectedTestQuestIdList, "getQuestIds works");
 
   t.equal(testQuestList.findById(expectedId), testQuest, "finding by id works 0");
   t.equal(testQuestList.findById(expectedId1), testQuest1, "finding by id works 1");

@@ -3,12 +3,10 @@ var questStatus = require('./questStatus.js')
 var idFactory = require('./counterId.js');
 
 
-var questId = function() {
-  var id = idFactory.createNewId();
+var questId = function(optionalId) {
+  var id = optionalId || idFactory.createNewId();
   return {
-    getId: function() {
-      return id;
-    },
+    getId: function() { return id; },
   };
 };
 
@@ -24,13 +22,30 @@ var questDescription = function(description) {
   };
 };
 
+// TODO: move this to its own file
+// FIXME: better name
+var asJSONable = (function() {
+  var toJSON = function toJSON() {
+    var obj = Object.create(null);
+    obj.id = this.getId();
+    obj.description = this.getDescription();
+    obj.questList = this.getQuestIds();
+    return JSON.stringify(obj, null, '\t');
+  };
+
+  return {
+    toJSON: toJSON,
+  };
+})();
+
 var quest = function(mixin) {
-  function quest(description) {
+  function quest(description, optionalId) {
     return Object.assign({},
                         questDescription(description),
                         questStatus(),
                         questList(),
                         questId(),
+                        asJSONable,
                         mixin);
   };
 

@@ -1,11 +1,17 @@
 var questList = function() {
   var questList = [];
+  var getQuestIds = function() {
+    return questList.map(function(qst) {
+      return qst.getId();
+    })
+  };
+  // TODO: move these function declarations outside the return object
   return {
     addQuest: function(quest) {
       questList.push(quest);
       return this;
     },
-    getQuestList: function() {
+    getQuests: function() {
       return questList.slice();
     },
     findById: function(id) {
@@ -16,6 +22,7 @@ var questList = function() {
       // TODO: error handling
       return ret[0];
     },
+    getQuestIds: getQuestIds,
   };
 };
 
