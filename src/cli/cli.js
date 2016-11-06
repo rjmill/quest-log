@@ -54,6 +54,7 @@ var newMode = vorpal.mode('new', 'new quest')
 
 var showCommand = vorpal.command('show', 'show global quests')
   .alias('sh')
+  .alias('ls')
   .action(function(args, callback) {
     globalQuestList
       .getQuests()
