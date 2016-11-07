@@ -1,3 +1,4 @@
+// TODO: since you're using require, you can make this easier to read
 var questStatus = (function() {
   var POSSIBLE_STATUSES = [
     "in progress",

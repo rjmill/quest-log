@@ -109,9 +109,10 @@ var showCommand = vorpal.command('show', 'show global quests')
  * select
  *
  * TODO:
- *  - edit
+ *  - edit quest
  *  - add subquest
  *  - change quest status
+ *  - delete quest?
  */
 var selectMode = vorpal.mode('select <id>', 'select quest by id')
   .alias('sel')
@@ -123,6 +124,23 @@ var selectMode = vorpal.mode('select <id>', 'select quest by id')
   })
   .action(function(command, callback) {
     command = command.trim();
+    callback();
+  })
+
+/**
+ * mark
+ *
+ * TODO:
+ *  - better name
+ */
+var markQuest = vorpal.command('mark <id>', 'mark quest as completed')
+  .alias('m')
+  .action(function(args, callback) {
+    var qst = globalQuestList.findById(args.id);
+    // TODO: if already completed?
+    qst.setStatus('completed');
+    this.log(`quest ${args.id} marked as completed`);
+    this.log(qst.display());
     callback();
   })
 
