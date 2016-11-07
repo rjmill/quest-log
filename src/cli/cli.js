@@ -9,35 +9,8 @@ var home = path.normalize(path.join(os.homedir(), '/.quest_log'));
 var DEFAULT_STORAGE_PATH = home;
 // TODO: figure out how you're going to handle global state
 var globalQuestList = require('../quest/questList.js')();
-
-
-// TODO: unit tests for this
-// TODO: put this into another file
-/**
- * Mixin containing CLI-specific features/helper functions.
- */
-var cliQuestMixin = (function() {
-  var STATUS_STRINGS = {
-    "in progress": "[ ]",
-    "completed": "[x]",
-  };
-
-  // FIXME: RENAME THIS
-  var statusToString = function(qst) {
-    return STATUS_STRINGS[qst.getStatus()];
-  };
-
-  var display = function() {
-    return statusToString(this) + " " + this.getId() + " " + this.getDescription();
-  };
-
-  return {
-    display: display,
-  };
-})();
-
-// HACK: I want the requires to be at the top of the program
-var quest = require('../quest/quest.js')(cliQuestMixin);
+// NOTE: this looks kind of gross. Do I care that much?
+var quest = require('../quest/quest')(require('./cliQuestMixin'));
 
 // TODO: Might want to abstract away the localStorage init logic
 //       Maybe put it into cliQuestMixin or something similar?
