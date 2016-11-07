@@ -2,13 +2,20 @@ var vorpal = require('vorpal')();
 
 var LocalStorage = require('node-localstorage').LocalStorage;
 var path = require('path');
-const os = require('os');
-const temp = path.normalize(path.join(os.tmpdir(), '/.local_storage'));
-const home = path.normalize(path.join(os.homedir(), '/.local_storage'));
-const DEFAULT_STORAGE_PATH = home;
+var os = require('os');
+// TODO: use this in a "testmode" startup argument
+var temp = path.normalize(path.join(os.tmpdir(), '/.quest_log'));
+var home = path.normalize(path.join(os.homedir(), '/.quest_log'));
+var DEFAULT_STORAGE_PATH = home;
+// TODO: figure out how you're going to handle global state
+var globalQuestList = require('../quest/questList.js')();
+
 
 // TODO: unit tests for this
 // TODO: put this into another file
+/**
+ * Mixin containing CLI-specific features/helper functions.
+ */
 var cliQuestMixin = (function() {
   var STATUS_STRINGS = {
     "in progress": "[ ]",
@@ -29,15 +36,30 @@ var cliQuestMixin = (function() {
   };
 })();
 
+// HACK: I want the requires to be at the top of the program
 var quest = require('../quest/quest.js')(cliQuestMixin);
 
-// TODO: keep global state elsewhere
-var globalQuestList = require('../quest/questList.js')();
+// TODO: Might want to abstract away the localStorage init logic
+//       Maybe put it into cliQuestMixin or something similar?
+var localStorage = new LocalStorage(path.join(DEFAULT_STORAGE_PATH));
 
-vorpal.localStorage('quest-log');
+/**
+ * TODO:
+ *  - write tests for all of this
+ *  - warning on exit: "Would you like to save?"
+ *  - move cliQuestMixin into its own file
+ *  - for testing, extract the mode definitions into variables
+ *    - or find/make a vorpal command to get all the commands
+ */
 
-var localStorage = new LocalStorage(DEFAULT_STORAGE_PATH + "quest-log");
-
+/**
+ * new
+ *
+ * Mode for creating new quests
+ *
+ * TODO:
+ *  - creating new subquests of a newly created quest
+ */
 var newMode = vorpal.mode('new', 'new quest')
   .alias('n')
   .delimiter('new:')
@@ -52,6 +74,25 @@ var newMode = vorpal.mode('new', 'new quest')
     callback();
   })
 
+/**
+ * show
+ *
+ * Shows all quests
+ *
+ * TODO:
+ *  - indicate nesting structure
+ *    - how?
+ *  - decide on defaults
+ *    - show ALL quests?
+ *    - show CURRENT quests?
+ *    - show TOPLEVEL quests?
+ *  - args
+ *    - all
+ *    - incomplete
+ *    - active
+ *    - finished
+ *    - regex to search for?
+ */
 var showCommand = vorpal.command('show', 'show global quests')
   .alias('sh')
   .alias('ls')
@@ -62,9 +103,17 @@ var showCommand = vorpal.command('show', 'show global quests')
         this.log(qst.display());
       }.bind(this));
     callback();
-  })
+  });
 
-var findMode = vorpal.mode('select <id>', 'select quest by id')
+/**
+ * select
+ *
+ * TODO:
+ *  - edit
+ *  - add subquest
+ *  - change quest status
+ */
+var selectMode = vorpal.mode('select <id>', 'select quest by id')
   .alias('sel')
   .init(function(args, callback) {
     // TODO: put this into some sort of mode state
@@ -75,28 +124,37 @@ var findMode = vorpal.mode('select <id>', 'select quest by id')
   .action(function(command, callback) {
     command = command.trim();
     callback();
-  });
-  // TODO: edit
-  // TODO: add subquest
-  // TODO: change status
+  })
 
-// TODO: teach this to handle subquests
+/**
+ * save
+ *
+ * TODO:
+ *  - saving subquests
+ */
 var saveCommand = vorpal.command('save', 'Save current state')
   .alias('s')
   .action(function(args, callback) {
     var key = null;
     globalQuestList.getQuests().forEach(function(qst) {
-      this.log("saving: \n" + qst.toJSON());
+      this.log("DEBUG: saving \n" + qst.toJSON());
       // FIXME: this can throw an error
       key = '_id' + qst.getId();
-      this.log('key = ' + key);
+      this.log('DEBUG: key = ' + key);
       localStorage.setItem(key, qst.toJSON());
     }.bind(this));
-    console.log('localStorageToObject: \n' + JSON.stringify(localStorageToObject(), null, "\t"));
-    this.log('localStorage.length = ' + localStorage.length);
+    this.log('DEBUG: localStorageToObject: \n' + JSON.stringify(localStorageToObject(), null, "\t"));
+    this.log('DEBUG: localStorage.length = ' + localStorage.length);
     callback();
   })
 
+/**
+ * restore
+ *
+ * TODO:
+ *  - restoring subquests
+ *  - what to do when there are unstored quests in memory?
+ */
 var restoreCommand = vorpal.command('restore', 'Restore saved data')
   .alias('r')
   .action(function(args, callback) {
@@ -109,7 +167,6 @@ var restoreCommand = vorpal.command('restore', 'Restore saved data')
       key = localStorage.key(i);
       this.log(key);
       currentQuest = localStorage.getItem(key);
-      // TODO: this doesn't handle subquests yet
       // TODO: extract out to a function or mixin
       this.log("adding quest: \n" + currentQuest);
       currentQuest = JSON.parse(currentQuest);
@@ -119,6 +176,13 @@ var restoreCommand = vorpal.command('restore', 'Restore saved data')
     callback();
   })
 
+/**
+ * clear
+ *
+ * TODO:
+ *  - big fat warning label
+ *  - needs to clear quests in memory too
+ */
 var clearCommand = vorpal.command('clear', 'clear data')
   .action(function(args, callback) {
     localStorage.clear();
@@ -141,25 +205,7 @@ function localStorageToObject() {
   return obj;
 }
 
-// TODO: this needs to be unit tested
-// TODO: integrate with the quest object
-// TODO: make this dependency injectable
-function saveAllQuests(questList) {
-  questList.getQuests().forEach(function(qst) {
-    // TODO
-  })
-}
-
-// TODO: IMPORTANT TO UNIT TEST
-function questFromJson(qst) {
-  // TODO
-}
-
-function saveQuest(qst) {
-  // TODO
-}
-
-// TODO: look into getting a cooler delimiter
+// TODO: maybe a shorter delimiter since we might start nesting like crazy?
 vorpal
   .delimiter('quests$')
   .show();
