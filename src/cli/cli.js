@@ -152,14 +152,14 @@ var restoreCommand = vorpal.command('restore', 'Restore saved data')
     var current;
     var newQuest;
     var key;
-    this.log('localStorage.length = ' + localStorage.length);
+    this.log('DEBUG: localStorage.length = ' + localStorage.length);
     for (var i = 0; i < localStorage.length; i++) {
-      this.log('current iteration: ' + i);
+      this.log('DEBUG: current iteration: ' + i);
       key = localStorage.key(i);
-      this.log(key);
+      this.log('DEBUG: key = ' + key);
       currentQuest = localStorage.getItem(key);
       // TODO: extract out to a function or mixin
-      this.log("adding quest: \n" + currentQuest);
+      this.log('DEBUG: adding quest: \n' + currentQuest);
       currentQuest = JSON.parse(currentQuest);
       newQuest = quest(currentQuest.description, currentQuest.id);
       globalQuestList.addQuest(newQuest);
