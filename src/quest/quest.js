@@ -40,15 +40,16 @@ var asJSONable = (function() {
 
 var quest = function(mixin) {
   function quest(description, optionalId) {
-    return Object.assign({},
-                        questDescription(description),
-                        questStatus(),
-                        questList(),
-                        questId(),
-                        asJSONable,
-                        mixin);
+    return Object.assign(
+      {},
+      questDescription(description),
+      questStatus(),
+      questList(),
+      questId(),
+      asJSONable,
+      mixin
+    );
   };
-
   return quest;
 };
 
