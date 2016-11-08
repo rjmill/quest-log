@@ -4,7 +4,8 @@
   "description": "A quest tracker for your everyday life",
   "main": "index.js",
   "scripts": {
-    "test": "node test/*.js"
+    "test": "node test/*.js",
+    "start": "node src/cli/cli.js"
   },
   "author": "RJ Miller <rjmiller10@gmail.com>",
   "license": "GPL-3.0",
